@@ -1,6 +1,7 @@
 package ru.pavlova.createFamily;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -88,11 +89,24 @@ public class Main {
         System.out.println("Введите имя человека: ");
         String name = scanner.nextLine();
 
-        System.out.println("Введите возраст человека: ");
-        int age = scanner.nextInt();
+        while (true) {
+            try {
+                System.out.println("Введите возраст человека: ");
+                int age = scanner.nextInt();
 
-        //добавление созданного челоека в список
-        humans.add(new Human(name, age));
+                //создаем нового Human, если возраст не подходит, то выбросит исключение
+                humans.add(new Human(name, age));
+                break;
+            } catch (AgeLimitException e) {
+                //обработка исключения при неверном возрасте
+                System.out.println("Ошибка:" + e.getMessage());
+                scanner.nextLine();
+            } catch (InputMismatchException e) {
+                //обработка исключения при неправильном формате входных данных
+                System.out.println("Ошибка: Введите целое число!");
+                scanner.nextLine();
+            }
+        }
     }
 
     /**
