@@ -145,9 +145,7 @@ public class Main {
         }
 
         System.out.println("Выберите животное: ");
-        for (int i = 0; i < animals.size(); i++) {
-            System.out.println((i + 1) + ". " + animals.get(i));
-        }
+        listIteration(animals);
         System.out.println("0. Выход в главное меню");
 
         int animalChoice = getIntInput();
@@ -165,9 +163,7 @@ public class Main {
         Animal selectedAnimal = animals.get(animalChoice - 1);
 
         System.out.println("Выберите хозяина: ");
-        for (int i = 0; i < humans.size(); i++) {
-            System.out.println((i+1) + ". " + humans.get(i));
-        }
+        listIteration(humans);
         System.out.println("0. Выход в главное меню");
 
         int humanChoise = getIntInput();
@@ -237,4 +233,15 @@ public class Main {
         allHumans();
         allAnimals();
     }
+
+    /**
+     * Выводит пронумерованный список
+     * @param list список объектов для вывода
+     */
+    private static void listIteration(List<?> list) {
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println((i + 1) + ". " + list.get(i));
+        }
+    }
+
 }

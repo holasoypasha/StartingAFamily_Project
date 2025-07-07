@@ -17,7 +17,6 @@ public class Animal {
     public Animal(String name, AnimalType type) {
         this.name = name;
         this.type = type;
-        this.owner = null;
     }
 
     public void setOwner(Human owner) {
