@@ -3,7 +3,7 @@ package ru.pavlova.createFamily;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Human {
+public class Human extends Creature {
     /**
      * Возраст человека
      */

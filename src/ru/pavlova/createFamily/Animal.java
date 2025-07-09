@@ -1,6 +1,6 @@
 package ru.pavlova.createFamily;
 
-public class Animal {
+public class Animal extends Creature {
     /**
      * Тип животного
      */
