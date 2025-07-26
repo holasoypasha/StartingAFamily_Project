@@ -1,6 +1,6 @@
 package ru.pavlova.createFamily;
 
-public class Animal extends Creature {
+public class Animal implements Creature {
     /**
      * Тип животного
      */
@@ -21,6 +21,11 @@ public class Animal extends Creature {
 
     public void setOwner(Human owner) {
         this.owner = owner;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override

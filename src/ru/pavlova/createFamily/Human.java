@@ -3,7 +3,7 @@ package ru.pavlova.createFamily;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Human extends Creature {
+public class Human implements Creature {
     /**
      * Возраст человека
      */
@@ -28,10 +28,6 @@ public class Human extends Creature {
         this.animals = new ArrayList<>();
     }
 
-    public String getName() {
-        return name;
-    }
-
     public List<Animal> getAnimals() {
         return animals;
     }
@@ -39,6 +35,11 @@ public class Human extends Creature {
     public void addAnimal(Animal animal) {
         animals.add(animal);
         animal.setOwner(this);
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override

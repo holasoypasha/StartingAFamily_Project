@@ -1,4 +1,5 @@
 package ru.pavlova.createFamily;
 
-public class Creature {
+public interface Creature {
+    String getName();
 }
