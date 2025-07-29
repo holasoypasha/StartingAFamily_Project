@@ -3,7 +3,7 @@ package ru.pavlova.createFamily;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Human {
+public class Human implements Creature {
     /**
      * Возраст человека
      */
@@ -15,7 +15,7 @@ public class Human {
     /**
      * Список животных
      */
-    private List<Animal> animals;
+    private List<Creature> animals;
 
     public Human(String name, int age) throws AgeLimitException {
         //если возраст не входит в диапазон от 0 до 120, то выбросится исключение
@@ -28,17 +28,18 @@ public class Human {
         this.animals = new ArrayList<>();
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public List<Animal> getAnimals() {
+    public List<Creature> getAnimals() {
         return animals;
     }
 
     public void addAnimal(Animal animal) {
         animals.add(animal);
         animal.setOwner(this);
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override
