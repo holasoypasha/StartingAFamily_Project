@@ -15,7 +15,7 @@ public class Human implements Creature {
     /**
      * Список животных
      */
-    private List<Animal> animals;
+    private List<Creature> animals;
 
     public Human(String name, int age) throws AgeLimitException {
         //если возраст не входит в диапазон от 0 до 120, то выбросится исключение
@@ -28,7 +28,7 @@ public class Human implements Creature {
         this.animals = new ArrayList<>();
     }
 
-    public List<Animal> getAnimals() {
+    public List<Creature> getAnimals() {
         return animals;
     }
 

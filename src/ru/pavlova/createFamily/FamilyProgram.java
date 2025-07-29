@@ -159,7 +159,7 @@ public class FamilyProgram {
         }
 
         System.out.println("Выберите животное: ");
-        listIteration(animals);
+        listIteration(new ArrayList<Creature>(animals));
         System.out.println("0. Выход в главное меню");
 
         int animalChoice = getIntInput();
@@ -177,7 +177,7 @@ public class FamilyProgram {
         Animal selectedAnimal = animals.get(animalChoice - 1);
 
         System.out.println("Выберите хозяина: ");
-        listIteration(humans);
+        listIteration(new ArrayList<Creature>(humans));
         System.out.println("0. Выход в главное меню");
 
         int humanChoise = getIntInput();
@@ -216,7 +216,7 @@ public class FamilyProgram {
             //проверка, есть ли животное у человека
             if (!human.getAnimals().isEmpty()) {
                 System.out.println("Животные: ");
-                for (Animal animal : human.getAnimals()) {
+                for (Creature animal : human.getAnimals()) {
                     System.out.println(" - " + animal + "\n");
                 }
             }
@@ -252,7 +252,7 @@ public class FamilyProgram {
      * Выводит пронумерованный список
      * @param list список объектов для вывода
      */
-    private void listIteration(List<? extends Creature> list) {
+    private void listIteration(List<Creature> list) {
         for (int i = 0; i < list.size(); i++) {
             System.out.println((i + 1) + ". " + list.get(i));
         }
