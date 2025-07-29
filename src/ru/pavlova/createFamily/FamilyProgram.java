@@ -1,5 +1,6 @@
 package ru.pavlova.createFamily;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -44,6 +45,12 @@ public class FamilyProgram {
                     allHumansAndAnimals();
                     break;
                 case 7:
+                    dataSaving();
+                    break;
+                case 8:
+                    loadingData();
+                    break;
+                case 0:
                     running = false;
                     System.out.println("Завершение программы");
                     break;
@@ -63,7 +70,9 @@ public class FamilyProgram {
                 "4. Показать людей\n" +
                 "5. Показать животных\n" +
                 "6. Показать людей и животных\n" +
-                "7. Выход\n" +
+                "7. Сохранить данные\n" +
+                "8. Загрузить данные\n" +
+                "0. Выход\n" +
                 "Выберите действие:");
     }
 
@@ -246,6 +255,58 @@ public class FamilyProgram {
     private void allHumansAndAnimals() {
         allHumans();
         allAnimals();
+    }
+
+    /**
+     * Сохраненние данных семьи в текстовый файл
+     */
+    private void dataSaving() {
+        try (PrintWriter writer = new PrintWriter("family_data.txt")) {
+            //добавляем людей в файл
+            for (Human human : humans) {
+                writer.println("Человек," + human.getName() + "," + human.getAge());
+            }
+
+            //добавляет животных в файл
+            for (Animal animal : animals) {
+                String ownerInfo;
+                if (animal.getOwner() != null) {
+                    ownerInfo = animal.getOwner().getName();
+                } else {
+                    ownerInfo = "без хозяина";
+                }
+
+                writer.println("Животное," + animal.getType().getAnimalName() + "," + animal.getName() + "," + ownerInfo);
+            }
+            System.out.println("Данные сохранены в файл 'family_data.txt'\n");
+        } catch (IOException e) {
+            System.out.println("Ошибка при сохранении: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Загрузка данных семьи их текстового файла
+     */
+    private void loadingData() {
+        //очищаем списки перед загрузкой данных из файла
+        humans.clear();
+        animals.clear();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("family_data.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+
+                if (data[0].equals("Человек")) {
+                    humans.add(new Human(data[1], Integer.parseInt(data[2])));
+                }
+            }
+            System.out.println("Данные загружены из файла 'family_data.txt'\n");
+        } catch (IOException e) {
+            System.out.println("Ошибка при загрузке: " + e.getMessage());
+        } catch (AgeLimitException e) {
+            System.out.println("Ошибка: " + e.getMessage());
+        }
     }
 
     /**

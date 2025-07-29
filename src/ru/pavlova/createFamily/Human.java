@@ -37,6 +37,10 @@ public class Human implements Creature {
         animal.setOwner(this);
     }
 
+    public int getAge() {
+        return age;
+    }
+
     @Override
     public String getName() {
         return name;

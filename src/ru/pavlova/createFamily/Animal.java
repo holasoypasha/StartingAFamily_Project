@@ -23,6 +23,14 @@ public class Animal implements Creature {
         this.owner = owner;
     }
 
+    public AnimalType getType() {
+        return type;
+    }
+
+    public Human getOwner() {
+        return owner;
+    }
+
     @Override
     public String getName() {
         return name;
