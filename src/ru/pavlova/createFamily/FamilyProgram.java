@@ -267,7 +267,7 @@ public class FamilyProgram {
                 writer.println("Человек," + human.getName() + "," + human.getAge());
             }
 
-            //добавляет животных в файл
+            //добавляем животных в файл
             for (Animal animal : animals) {
                 String ownerInfo;
                 if (animal.getOwner() != null) {
@@ -297,8 +297,44 @@ public class FamilyProgram {
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
 
+                //добавляем людей
                 if (data[0].equals("Человек")) {
                     humans.add(new Human(data[1], Integer.parseInt(data[2])));
+                }
+
+                //добавляем животных
+                if (data[0].equals("Животное")) {
+                    String rusType = data[1];
+                    AnimalType type = null;
+
+                    switch (rusType) {
+                        case "Кот":
+                            type = AnimalType.CAT;
+                            break;
+                        case "Собака":
+                            type = AnimalType.DOG;
+                            break;
+                        case "Птичка":
+                            type = AnimalType.BIRD;
+                            break;
+                        case "Хомяк":
+                            type = AnimalType.HAMSTER;
+                            break;
+                        default:
+                            System.out.println("Ошибка: неизвестный тип животного");
+                    }
+
+                    Animal newAnimal = new Animal(data[2], type);
+                    if (!data[3].equals("без хозяина")) {
+                        for (Human human : humans) {
+                            if (human.getName().equals(data[3])) {
+                                human.addAnimal(newAnimal);
+                                newAnimal.setOwner(human);
+                                break;
+                            }
+                        }
+                    }
+                    animals.add(newAnimal);
                 }
             }
             System.out.println("Данные загружены из файла 'family_data.txt'\n");
