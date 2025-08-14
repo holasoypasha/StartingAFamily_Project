@@ -276,7 +276,7 @@ public class FamilyProgram {
                     ownerInfo = "без хозяина";
                 }
 
-                writer.println("Животное," + animal.getType().getAnimalName() + "," + animal.getName() + "," + ownerInfo);
+                writer.println("Животное," + animal.getType() + "," + animal.getName() + "," + ownerInfo);
             }
             System.out.println("Данные сохранены в файл 'family_data.txt'\n");
         } catch (IOException e) {
@@ -295,53 +295,61 @@ public class FamilyProgram {
         try (BufferedReader reader = new BufferedReader(new FileReader("family_data.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
+                try {
+                    String[] data = line.split(",");
 
-                //добавляем людей
-                if (data[0].equals("Человек")) {
-                    humans.add(new Human(data[1], Integer.parseInt(data[2])));
-                }
-
-                //добавляем животных
-                if (data[0].equals("Животное")) {
-                    String rusType = data[1];
-                    AnimalType type = null;
-
-                    switch (rusType) {
-                        case "Кот":
-                            type = AnimalType.CAT;
-                            break;
-                        case "Собака":
-                            type = AnimalType.DOG;
-                            break;
-                        case "Птичка":
-                            type = AnimalType.BIRD;
-                            break;
-                        case "Хомяк":
-                            type = AnimalType.HAMSTER;
-                            break;
-                        default:
-                            System.out.println("Ошибка: неизвестный тип животного");
-                    }
-
-                    Animal newAnimal = new Animal(data[2], type);
-                    if (!data[3].equals("без хозяина")) {
-                        for (Human human : humans) {
-                            if (human.getName().equals(data[3])) {
-                                human.addAnimal(newAnimal);
-                                newAnimal.setOwner(human);
-                                break;
-                            }
+                    //добавляем людей
+                    if (data[0].equals("Человек")) {
+                        try {
+                            String name = data[1];
+                            int age = Integer.parseInt(data[2]);
+                            humans.add(new Human(name, age));
+                        } catch (AgeLimitException e) {
+                            System.out.println("Ошибка возраста: " + e.getMessage());
+                            return;
+                        } catch (NumberFormatException e) {
+                            System.out.println("Ошибка формата: " + e.getMessage());
+                            return;
+                        } catch (Exception e) {
+                            System.out.println("Ошибка: " + e.getMessage());
+                            return;
                         }
                     }
-                    animals.add(newAnimal);
+
+                    //добавляем животных
+                    else if (data[0].equals("Животное")) {
+                        try {
+                            AnimalType type = AnimalType.valueOf(data[1]);
+                            String name = data[2];
+                            String ownerInfo = data[3];
+                            Animal newAnimal = new Animal(name, type);
+
+                            if (!ownerInfo.equals("без хозяина")) {
+                                for (Human human : humans) {
+                                    if (human.getName().equals(ownerInfo)) {
+                                        human.addAnimal(newAnimal);
+                                        newAnimal.setOwner(human);
+                                        break;
+                                    }
+                                }
+                            }
+                            animals.add(newAnimal);
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("Ошибка: неизвестный тип животного. " + e.getMessage());
+                            return;
+                        } catch (Exception e) {
+                            System.out.println("Ошибка: " + e.getMessage());
+                            return;
+                        }
+                    }
+                } catch (Exception e) {
+                    System.out.println("Ошибка: " + e.getMessage());
+                    return;
                 }
             }
             System.out.println("Данные загружены из файла 'family_data.txt'\n");
         } catch (IOException e) {
             System.out.println("Ошибка при загрузке: " + e.getMessage());
-        } catch (AgeLimitException e) {
-            System.out.println("Ошибка: " + e.getMessage());
         }
     }
 
