@@ -1,10 +1,7 @@
 package ru.pavlova.createFamily;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class FamilyProgram {
     private Scanner scanner = new Scanner(System.in);
@@ -16,6 +13,9 @@ public class FamilyProgram {
      * Список всех созданный животных
      */
     private List<Animal> animals = new ArrayList<>();
+
+//    private Map<Integer, Human> humans = new HashMap<>();
+//    private Map<Integer, Animal> animals = new HashMap<>();
 
     void manager() {
         boolean running = true;
@@ -158,12 +158,12 @@ public class FamilyProgram {
     private void assignment() {
         //проверка наличия животного
         if (animals.isEmpty()) {
-            System.out.println("\nНет животных для привязки к человеку!\n");
+            System.out.println("Нет животных для привязки к человеку!\n");
             return;
         }
         //проверка наличия людей
         if (humans.isEmpty()) {
-            System.out.println("\nНет людей для привязки животного!\n");
+            System.out.println("Нет людей для привязки животного!\n");
             return;
         }
 
@@ -210,7 +210,7 @@ public class FamilyProgram {
      * Отображение списка всех людей
      */
     private void allHumans() {
-        System.out.println("\nСписок всех людей: ");
+        System.out.println("Список всех людей: ");
         //проверка наличия людей
         if (humans.isEmpty()) {
             System.out.println("Люди не созданы.\n");
@@ -220,23 +220,24 @@ public class FamilyProgram {
         //выводим информацию о каждом человеке
         for (int i = 0; i < humans.size(); i++) {
             Human human = humans.get(i);
-            System.out.println((i + 1) + ". " + human + "\n");
+            System.out.println((i + 1) + ". " + human);
 
             //проверка, есть ли животное у человека
             if (!human.getAnimals().isEmpty()) {
                 System.out.println("Животные: ");
                 for (Creature animal : human.getAnimals()) {
-                    System.out.println(" - " + animal + "\n");
+                    System.out.println(" - " + animal);
                 }
             }
         }
+        System.out.println("\n");
     }
 
     /**
      * Отображение списка всех животных
      */
     private void allAnimals() {
-        System.out.println("\nСписок всех животных: ");
+        System.out.println("Список всех животных: ");
         //проверка наличия животных
         if (animals.isEmpty()) {
             System.out.println("Животные не созданы.\n");
@@ -245,8 +246,9 @@ public class FamilyProgram {
 
         //выводим информацию о каждом животном
         for (int i = 0; i < animals.size(); i++) {
-            System.out.println((i + 1) + ". " + animals.get(i) + "\n");
+            System.out.println((i + 1) + ". " + animals.get(i));
         }
+        System.out.println("\n");
     }
 
     /**
@@ -264,19 +266,19 @@ public class FamilyProgram {
         try (PrintWriter writer = new PrintWriter("family_data.txt")) {
             //добавляем людей в файл
             for (Human human : humans) {
-                writer.println("Человек," + human.getName() + "," + human.getAge());
+                writer.println("Человек," + human.getId() + "," + human.getName() + "," + human.getAge());
             }
 
             //добавляем животных в файл
             for (Animal animal : animals) {
-                String ownerInfo;
+                int ownerId;
                 if (animal.getOwner() != null) {
-                    ownerInfo = animal.getOwner().getName();
+                    ownerId = animal.getOwner().getId();
                 } else {
-                    ownerInfo = "без хозяина";
+                    ownerId = -1;
                 }
 
-                writer.println("Животное," + animal.getType() + "," + animal.getName() + "," + ownerInfo);
+                writer.println("Животное," + animal.getId() + "," + animal.getType() + "," + animal.getName() + "," + ownerId);
             }
             System.out.println("Данные сохранены в файл 'family_data.txt'\n");
         } catch (IOException e) {
@@ -301,9 +303,10 @@ public class FamilyProgram {
                     //добавляем людей
                     if (data[0].equals("Человек")) {
                         try {
-                            String name = data[1];
-                            int age = Integer.parseInt(data[2]);
-                            humans.add(new Human(name, age));
+                            int id = Integer.parseInt(data[1]);
+                            String name = data[2];
+                            int age = Integer.parseInt(data[3]);
+                            humans.add(new Human(id, name, age));
                         } catch (AgeLimitException e) {
                             System.out.println("Ошибка возраста: " + e.getMessage());
                             return;
@@ -319,14 +322,15 @@ public class FamilyProgram {
                     //добавляем животных
                     else if (data[0].equals("Животное")) {
                         try {
-                            AnimalType type = AnimalType.valueOf(data[1]);
-                            String name = data[2];
-                            String ownerInfo = data[3];
-                            Animal newAnimal = new Animal(name, type);
+                            int id = Integer.parseInt(data[1]);
+                            AnimalType type = AnimalType.valueOf(data[2]);
+                            String name = data[3];
+                            int ownerId = Integer.parseInt(data[4]);
+                            Animal newAnimal = new Animal(id, name, type);
 
-                            if (!ownerInfo.equals("без хозяина")) {
+                            if (ownerId > -1) {
                                 for (Human human : humans) {
-                                    if (human.getName().equals(ownerInfo)) {
+                                    if (human.getId() == ownerId) {
                                         human.addAnimal(newAnimal);
                                         newAnimal.setOwner(human);
                                         break;
@@ -335,7 +339,7 @@ public class FamilyProgram {
                             }
                             animals.add(newAnimal);
                         } catch (IllegalArgumentException e) {
-                            System.out.println("Ошибка: неизвестный тип животного. " + e.getMessage());
+                            System.out.println("Ошибка: неизвестный тип. " + e.getMessage());
                             return;
                         } catch (Exception e) {
                             System.out.println("Ошибка: " + e.getMessage());

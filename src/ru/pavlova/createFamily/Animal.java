@@ -10,13 +10,42 @@ public class Animal implements Creature {
      */
     private String name;
     /**
+     * Идентификатор животного
+     */
+    private int id;
+    /**
+     * Счетчик идентификатора
+     */
+    private static int increaseId = 1;
+    /**
      * Хозяин животного
      */
     private Human owner;
 
+    /**
+     * Обычное создание
+     * @param name кличка животного
+     * @param type тип животного
+     */
     public Animal(String name, AnimalType type) {
+        this.id = increaseId++;
         this.name = name;
         this.type = type;
+    }
+
+    /**
+     * СОздание для загрузки из файла
+     * @param id идентификатор животного
+     * @param name кличка животного
+     * @param type тип животного
+     */
+    public Animal(int id, String name, AnimalType type) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        if (id >= increaseId) {
+            increaseId = id + 1;
+        }
     }
 
     public void setOwner(Human owner) {
@@ -29,6 +58,11 @@ public class Animal implements Creature {
 
     public Human getOwner() {
         return owner;
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 
     @Override
