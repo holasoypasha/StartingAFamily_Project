@@ -1,5 +1,7 @@
 package ru.pavlova.createFamily;
 
+import javax.xml.bind.annotation.XmlElement;
+
 public class Animal implements Creature {
     /**
      * Тип животного
@@ -52,19 +54,23 @@ public class Animal implements Creature {
         this.owner = owner;
     }
 
+    @XmlElement
     public AnimalType getType() {
         return type;
     }
 
+    @XmlElement
     public Human getOwner() {
         return owner;
     }
 
+    @XmlElement
     @Override
     public int getId() {
         return id;
     }
 
+    @XmlElement
     @Override
     public String getName() {
         return name;

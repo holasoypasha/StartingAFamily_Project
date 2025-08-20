@@ -1,5 +1,6 @@
 package ru.pavlova.createFamily;
 
+import javax.xml.bind.annotation.XmlElement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,15 +73,18 @@ public class Human implements Creature {
         animal.setOwner(this);
     }
 
+    @XmlElement
     public int getAge() {
         return age;
     }
 
+    @XmlElement
     @Override
     public int getId() {
         return id;
     }
 
+    @XmlElement
     @Override
     public String getName() {
         return name;

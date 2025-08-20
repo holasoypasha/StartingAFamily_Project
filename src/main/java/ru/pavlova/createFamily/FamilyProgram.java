@@ -14,8 +14,7 @@ public class FamilyProgram {
      */
     private List<Animal> animals = new ArrayList<>();
 
-//    private Map<Integer, Human> humans = new HashMap<>();
-//    private Map<Integer, Animal> animals = new HashMap<>();
+    private SaveAndLoadManager dataManager = new SaveAndLoadManager(humans, animals);
 
     void manager() {
         boolean running = true;
@@ -260,29 +259,57 @@ public class FamilyProgram {
     }
 
     /**
-     * Сохраненние данных семьи в текстовый файл
+     * Сохраненние данных семьи в файл
      */
     private void dataSaving() {
-        try (PrintWriter writer = new PrintWriter("family_data.txt")) {
-            //добавляем людей в файл
-            for (Human human : humans) {
-                writer.println("Человек," + human.getId() + "," + human.getName() + "," + human.getAge());
-            }
+        System.out.println("Выберите формат сохранения:");
+        System.out.println("1. TXT");
+        System.out.println("2. XML");
+        System.out.println("3. JSON");
+        System.out.println("0. Отмена");
+        int formatChoice = getIntInput();
 
-            //добавляем животных в файл
-            for (Animal animal : animals) {
-                int ownerId;
-                if (animal.getOwner() != null) {
-                    ownerId = animal.getOwner().getId();
-                } else {
-                    ownerId = -1;
-                }
+        if (formatChoice == 0) {
+            return;
+        }
+        String format = "";
+        String fileName = "";
 
-                writer.println("Животное," + animal.getId() + "," + animal.getType() + "," + animal.getName() + "," + ownerId);
-            }
-            System.out.println("Данные сохранены в файл 'family_data.txt'\n");
-        } catch (IOException e) {
-            System.out.println("Ошибка при сохранении: " + e.getMessage());
+        switch (formatChoice) {
+            case 1:
+                format = "txt";
+                fileName = "family_data.txt";
+                break;
+            case 2:
+                format = "xml";
+                fileName = "family_data.xml";
+                break;
+            case 3:
+                format = "json";
+                fileName = "family_data.json";
+                break;
+            default:
+                System.out.println("Неверный выбор. Попробуйте снова!");
+        }
+
+        //пользовательно вводит путь
+        scanner.nextLine();
+        System.out.println("Введите путь для сохранения (или нажмите Enter, чтобы файл с названием family_data сохранился в папку проекта): ");
+        String filePath = scanner.nextLine().trim();
+
+        //если пользователь не ввел путь
+        if (filePath.isEmpty()) {
+            filePath = fileName;
+        }
+        //добавляем расширение к файлу, если его нет
+        if (!filePath.toLowerCase().endsWith("." + format)) {
+            filePath += "." + format;
+        }
+
+        try {
+            dataManager.save(filePath, format);
+        } catch (Exception e) {
+            System.out.println("Ошибка сохранения: " + e.getMessage());
         }
     }
 
@@ -290,70 +317,61 @@ public class FamilyProgram {
      * Загрузка данных семьи их текстового файла
      */
     private void loadingData() {
-        //очищаем списки перед загрузкой данных из файла
-        humans.clear();
-        animals.clear();
+        System.out.println("Выберите формат загрузки:");
+        System.out.println("1. TXT");
+        System.out.println("2. XML");
+        System.out.println("3. JSON");
+        System.out.println("0. Отмена");
+        int formatChoice = getIntInput();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("family_data.txt"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                try {
-                    String[] data = line.split(",");
+        if (formatChoice == 0) {
+            return;
+        }
 
-                    //добавляем людей
-                    if (data[0].equals("Человек")) {
-                        try {
-                            int id = Integer.parseInt(data[1]);
-                            String name = data[2];
-                            int age = Integer.parseInt(data[3]);
-                            humans.add(new Human(id, name, age));
-                        } catch (AgeLimitException e) {
-                            System.out.println("Ошибка возраста: " + e.getMessage());
-                            return;
-                        } catch (NumberFormatException e) {
-                            System.out.println("Ошибка формата: " + e.getMessage());
-                            return;
-                        } catch (Exception e) {
-                            System.out.println("Ошибка: " + e.getMessage());
-                            return;
-                        }
-                    }
+        String format = "";
+        String fileName = "";
 
-                    //добавляем животных
-                    else if (data[0].equals("Животное")) {
-                        try {
-                            int id = Integer.parseInt(data[1]);
-                            AnimalType type = AnimalType.valueOf(data[2]);
-                            String name = data[3];
-                            int ownerId = Integer.parseInt(data[4]);
-                            Animal newAnimal = new Animal(id, name, type);
+        switch (formatChoice) {
+            case 1:
+                format = "txt";
+                fileName = "family_data.txt";
+                break;
+            case 2:
+                format = "xml";
+                fileName = "family_data.xml";
+                break;
+            case 3:
+                format = "json";
+                fileName = "family_data.json";
+                break;
+            default:
+                System.out.println("Неверный выбор. Попробуйте снова!");
+        }
 
-                            if (ownerId > -1) {
-                                for (Human human : humans) {
-                                    if (human.getId() == ownerId) {
-                                        human.addAnimal(newAnimal);
-                                        newAnimal.setOwner(human);
-                                        break;
-                                    }
-                                }
-                            }
-                            animals.add(newAnimal);
-                        } catch (IllegalArgumentException e) {
-                            System.out.println("Ошибка: неизвестный тип. " + e.getMessage());
-                            return;
-                        } catch (Exception e) {
-                            System.out.println("Ошибка: " + e.getMessage());
-                            return;
-                        }
-                    }
-                } catch (Exception e) {
-                    System.out.println("Ошибка: " + e.getMessage());
-                    return;
-                }
+        scanner.nextLine();
+        System.out.println("Введите путь к файлу (или нажмите Enter для выбора файла из папки проекта, если он существует): ");
+        String filePath = scanner.nextLine().trim();
+
+        // если пользователь не ввел путь
+        if (filePath.isEmpty()) {
+            filePath = fileName;
+        }
+
+        if (!filePath.toLowerCase().endsWith("." + format)) {
+            filePath += "." + format;
+
+            // проверяем существование файла
+            File file = new File(filePath);
+            if (!file.exists()) {
+                System.out.println("Файл не найден: " + file.getAbsolutePath());
+                return;
             }
-            System.out.println("Данные загружены из файла 'family_data.txt'\n");
-        } catch (IOException e) {
-            System.out.println("Ошибка при загрузке: " + e.getMessage());
+
+            try {
+                dataManager.load(filePath, format);
+            } catch (Exception e) {
+                System.out.println("Ошибка загрузки: " + e.getMessage());
+            }
         }
     }
 
