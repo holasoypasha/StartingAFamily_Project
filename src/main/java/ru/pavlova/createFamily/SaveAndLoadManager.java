@@ -4,9 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import javax.xml.bind.*;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SaveAndLoadManager {
@@ -87,8 +86,15 @@ public class SaveAndLoadManager {
     private void saveXml(String filePath) {
         try {
             FamilyData familyData = new FamilyData();
-            familyData.humans = humans;
-            familyData.animals = animals;
+            familyData.humans = new ArrayList<>(humans);
+            familyData.animals = new ArrayList<>(animals);
+
+            for (Animal animal : familyData.animals) {
+                if (animal.getOwner() != null) {
+                    animal.setOwnerId(animal.getOwner().getId());
+                    animal.setOwner(null);
+                }
+            }
 
             JAXBContext context = JAXBContext.newInstance(FamilyData.class);
             Marshaller marshaller = context.createMarshaller();
@@ -98,6 +104,7 @@ public class SaveAndLoadManager {
             System.out.println("Данные сохранены в файл " + filePath);
         } catch (JAXBException e) {
             System.out.println("Ошибка при сохранении: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -209,6 +216,7 @@ public class SaveAndLoadManager {
             System.out.println("Данные загружены из файла " + filePath);
         } catch (Exception e) {
             System.out.println("Ошибка при загрузке: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -237,9 +245,9 @@ public class SaveAndLoadManager {
      */
     private void restoreRelationships() {
         for (Animal animal : animals) {
-            if (animal.getOwner() != null) {
+            if (animal.getOwnerId() > -1) {
                 for (Human human : humans) {
-                    if (human.getId() == animal.getOwner().getId()) {
+                    if (human.getId() == animal.getOwnerId()) {
                         human.addAnimal(animal);
                         animal.setOwner(human);
                         break;
@@ -247,16 +255,9 @@ public class SaveAndLoadManager {
                 }
             }
         }
-    }
-
-    @XmlRootElement
-    private class FamilyData {
-        @XmlElement
-        public List<Human> humans;
-
-        @XmlElement
-        public List<Animal> animals;
-
-        public FamilyData () {}
+        // очищаем временные ID после восстановления связей
+        for (Animal animal : animals) {
+            animal.setOwnerId(-1);
+        }
     }
 }

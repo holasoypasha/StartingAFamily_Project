@@ -1,19 +1,24 @@
 package ru.pavlova.createFamily;
 
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.*;
 
+@XmlRootElement(name = "animal")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Animal implements Creature {
     /**
      * Тип животного
      */
+    @XmlElement
     private AnimalType type;
     /**
      * Кличка животного
      */
+    @XmlElement
     private String name;
     /**
      * Идентификатор животного
      */
+    @XmlElement
     private int id;
     /**
      * Счетчик идентификатора
@@ -22,7 +27,13 @@ public class Animal implements Creature {
     /**
      * Хозяин животного
      */
+    @XmlTransient
     private Human owner;
+    /**
+     * ID владельца для сериализации
+     */
+    @XmlElement(name = "ownerId")
+    private int ownerId = -1;
 
     /**
      * Обычное создание
@@ -50,27 +61,34 @@ public class Animal implements Creature {
         }
     }
 
+    public Animal() {}
+
     public void setOwner(Human owner) {
         this.owner = owner;
     }
 
-    @XmlElement
     public AnimalType getType() {
         return type;
     }
 
-    @XmlElement
+    @XmlTransient
     public Human getOwner() {
         return owner;
     }
 
-    @XmlElement
+    public int getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(int ownerId) {
+        this.ownerId = ownerId;
+    }
+
     @Override
     public int getId() {
         return id;
     }
 
-    @XmlElement
     @Override
     public String getName() {
         return name;

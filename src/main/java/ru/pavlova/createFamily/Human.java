@@ -1,21 +1,26 @@
 package ru.pavlova.createFamily;
 
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@XmlRootElement(name = "human")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Human implements Creature {
     /**
      * Возраст человека
      */
+    @XmlElement
     private int age;
     /**
      * Имя человека
      */
+    @XmlElement
     private String name;
     /**
      * Идентификатор человека
      */
+    @XmlElement
     private int id;
     /**
      * Счетчик идентификатора
@@ -24,6 +29,7 @@ public class Human implements Creature {
     /**
      * Список животных
      */
+    @XmlTransient
     private List<Creature> animals;
 
     /**
@@ -64,6 +70,11 @@ public class Human implements Creature {
         }
     }
 
+    public Human() {
+        this.animals = new ArrayList<>();
+    }
+
+    @XmlTransient
     public List<Creature> getAnimals() {
         return animals;
     }
@@ -73,18 +84,15 @@ public class Human implements Creature {
         animal.setOwner(this);
     }
 
-    @XmlElement
     public int getAge() {
         return age;
     }
 
-    @XmlElement
     @Override
     public int getId() {
         return id;
     }
 
-    @XmlElement
     @Override
     public String getName() {
         return name;

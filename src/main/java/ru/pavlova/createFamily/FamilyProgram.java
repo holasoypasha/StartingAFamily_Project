@@ -290,6 +290,7 @@ public class FamilyProgram {
                 break;
             default:
                 System.out.println("Неверный выбор. Попробуйте снова!");
+                return;
         }
 
         //пользовательно вводит путь
@@ -346,6 +347,7 @@ public class FamilyProgram {
                 break;
             default:
                 System.out.println("Неверный выбор. Попробуйте снова!");
+                return;
         }
 
         scanner.nextLine();
@@ -359,20 +361,21 @@ public class FamilyProgram {
 
         if (!filePath.toLowerCase().endsWith("." + format)) {
             filePath += "." + format;
-
-            // проверяем существование файла
-            File file = new File(filePath);
-            if (!file.exists()) {
-                System.out.println("Файл не найден: " + file.getAbsolutePath());
-                return;
-            }
-
-            try {
-                dataManager.load(filePath, format);
-            } catch (Exception e) {
-                System.out.println("Ошибка загрузки: " + e.getMessage());
-            }
         }
+
+        // проверяем существование файла
+        File file = new File(filePath);
+        if (!file.exists()) {
+            System.out.println("Файл не найден: " + file.getAbsolutePath());
+            return;
+        }
+
+        try {
+            dataManager.load(filePath, format);
+        } catch (Exception e) {
+            System.out.println("Ошибка загрузки: " + e.getMessage());
+        }
+
     }
 
     /**
