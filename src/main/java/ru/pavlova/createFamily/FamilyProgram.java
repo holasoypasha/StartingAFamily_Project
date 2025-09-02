@@ -5,18 +5,10 @@ import java.util.*;
 
 public class FamilyProgram {
     private Scanner scanner = new Scanner(System.in);
-    /**
-     * Список всех добавленных людей
-     */
-    private List<Human> humans = new ArrayList<>();
-    /**
-     * Список всех созданный животных
-     */
-    private List<Animal> animals = new ArrayList<>();
+    private FamilyData familyData = new FamilyData();
+    private SaveAndLoadManager dataManager = new SaveAndLoadManager(familyData);
 
-    private SaveAndLoadManager dataManager = new SaveAndLoadManager(humans, animals);
-
-    void manager() {
+    public void manager() {
         boolean running = true;
 
         while (running) {
@@ -103,7 +95,7 @@ public class FamilyProgram {
                 int age = scanner.nextInt();
 
                 //создаем нового Human, если возраст не подходит, то выбросит исключение
-                humans.add(new Human(name, age));
+                familyData.humans.add(new Human(name, age));
                 break;
             } catch (AgeLimitException e) {
                 //обработка исключения при неверном возрасте
@@ -148,7 +140,7 @@ public class FamilyProgram {
         String name = scanner.nextLine();
 
         AnimalType type = types[typeChoice - 1];
-        animals.add(new Animal(name, type));
+        familyData.animals.add(new Animal(name, type));
     }
 
     /**
@@ -156,18 +148,18 @@ public class FamilyProgram {
      */
     private void assignment() {
         //проверка наличия животного
-        if (animals.isEmpty()) {
+        if (familyData.animals.isEmpty()) {
             System.out.println("Нет животных для привязки к человеку!\n");
             return;
         }
         //проверка наличия людей
-        if (humans.isEmpty()) {
+        if (familyData.humans.isEmpty()) {
             System.out.println("Нет людей для привязки животного!\n");
             return;
         }
 
         System.out.println("Выберите животное: ");
-        listIteration(new ArrayList<Creature>(animals));
+        listIteration(new ArrayList<Creature>(familyData.animals));
         System.out.println("0. Выход в главное меню");
 
         int animalChoice = getIntInput();
@@ -176,16 +168,16 @@ public class FamilyProgram {
         if (animalChoice == 0) {
             return;
         }
-        if (animalChoice < 1 || animalChoice > animals.size()) {
+        if (animalChoice < 1 || animalChoice > familyData.animals.size()) {
             System.out.println("Неверный выбор!\n");
             return;
         }
 
         //пполучаем выбранное животное
-        Animal selectedAnimal = animals.get(animalChoice - 1);
+        Animal selectedAnimal = familyData.animals.get(animalChoice - 1);
 
         System.out.println("Выберите хозяина: ");
-        listIteration(new ArrayList<Creature>(humans));
+        listIteration(new ArrayList<Creature>(familyData.humans));
         System.out.println("0. Выход в главное меню");
 
         int humanChoise = getIntInput();
@@ -194,13 +186,13 @@ public class FamilyProgram {
         if (humanChoise == 0) {
             return;
         }
-        if (humanChoise <1 || humanChoise > humans.size()) {
+        if (humanChoise <1 || humanChoise > familyData.humans.size()) {
             System.out.println("Неверный выбор!\n");
             return;
         }
 
         //получаем выбранного человека
-        Human selectedHuman = humans.get(humanChoise - 1);
+        Human selectedHuman = familyData.humans.get(humanChoise - 1);
         selectedHuman.addAnimal(selectedAnimal);
         System.out.println("Животное привязано к человеку!\n");
     }
@@ -211,14 +203,14 @@ public class FamilyProgram {
     private void allHumans() {
         System.out.println("Список всех людей: ");
         //проверка наличия людей
-        if (humans.isEmpty()) {
+        if (familyData.humans.isEmpty()) {
             System.out.println("Люди не созданы.\n");
             return;
         }
 
         //выводим информацию о каждом человеке
-        for (int i = 0; i < humans.size(); i++) {
-            Human human = humans.get(i);
+        for (int i = 0; i < familyData.humans.size(); i++) {
+            Human human = familyData.humans.get(i);
             System.out.println((i + 1) + ". " + human);
 
             //проверка, есть ли животное у человека
@@ -238,14 +230,14 @@ public class FamilyProgram {
     private void allAnimals() {
         System.out.println("Список всех животных: ");
         //проверка наличия животных
-        if (animals.isEmpty()) {
+        if (familyData.animals.isEmpty()) {
             System.out.println("Животные не созданы.\n");
             return;
         }
 
         //выводим информацию о каждом животном
-        for (int i = 0; i < animals.size(); i++) {
-            System.out.println((i + 1) + ". " + animals.get(i));
+        for (int i = 0; i < familyData.animals.size(); i++) {
+            System.out.println((i + 1) + ". " + familyData.animals.get(i));
         }
         System.out.println("\n");
     }
@@ -273,20 +265,20 @@ public class FamilyProgram {
             return;
         }
         String format = "";
-        String fileName = "";
+        String defaultFileName = "";
 
         switch (formatChoice) {
             case 1:
                 format = "txt";
-                fileName = "family_data.txt";
+                defaultFileName = "family_data.txt";
                 break;
             case 2:
                 format = "xml";
-                fileName = "family_data.xml";
+                defaultFileName = "family_data.xml";
                 break;
             case 3:
                 format = "json";
-                fileName = "family_data.json";
+                defaultFileName = "family_data.json";
                 break;
             default:
                 System.out.println("Неверный выбор. Попробуйте снова!");
@@ -300,7 +292,7 @@ public class FamilyProgram {
 
         //если пользователь не ввел путь
         if (filePath.isEmpty()) {
-            filePath = fileName;
+            filePath = defaultFileName;
         }
         //добавляем расширение к файлу, если его нет
         if (!filePath.toLowerCase().endsWith("." + format)) {
@@ -330,20 +322,20 @@ public class FamilyProgram {
         }
 
         String format = "";
-        String fileName = "";
+        String defaultFileName = "";
 
         switch (formatChoice) {
             case 1:
                 format = "txt";
-                fileName = "family_data.txt";
+                defaultFileName = "family_data.txt";
                 break;
             case 2:
                 format = "xml";
-                fileName = "family_data.xml";
+                defaultFileName = "family_data.xml";
                 break;
             case 3:
                 format = "json";
-                fileName = "family_data.json";
+                defaultFileName = "family_data.json";
                 break;
             default:
                 System.out.println("Неверный выбор. Попробуйте снова!");
@@ -356,7 +348,7 @@ public class FamilyProgram {
 
         // если пользователь не ввел путь
         if (filePath.isEmpty()) {
-            filePath = fileName;
+            filePath = defaultFileName;
         }
 
         if (!filePath.toLowerCase().endsWith("." + format)) {
@@ -372,6 +364,7 @@ public class FamilyProgram {
 
         try {
             dataManager.load(filePath, format);
+            dataManager.restoreRelationships();
         } catch (Exception e) {
             System.out.println("Ошибка загрузки: " + e.getMessage());
         }

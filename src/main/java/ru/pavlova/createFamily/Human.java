@@ -8,6 +8,10 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Human implements Creature {
     /**
+     * Счетчик идентификатора
+     */
+    private static int increaseId = 1;
+    /**
      * Возраст человека
      */
     @XmlElement
@@ -22,10 +26,7 @@ public class Human implements Creature {
      */
     @XmlElement
     private int id;
-    /**
-     * Счетчик идентификатора
-     */
-    private static int increaseId = 1;
+
     /**
      * Список животных
      */

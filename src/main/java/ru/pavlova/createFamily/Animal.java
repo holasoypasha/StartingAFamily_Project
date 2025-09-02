@@ -6,6 +6,10 @@ import javax.xml.bind.annotation.*;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Animal implements Creature {
     /**
+     * Счетчик идентификатора
+     */
+    private static int increaseId = 1;
+    /**
      * Тип животного
      */
     @XmlElement
@@ -21,10 +25,6 @@ public class Animal implements Creature {
     @XmlElement
     private int id;
     /**
-     * Счетчик идентификатора
-     */
-    private static int increaseId = 1;
-    /**
      * Хозяин животного
      */
     @XmlTransient
@@ -33,7 +33,7 @@ public class Animal implements Creature {
      * ID владельца для сериализации
      */
     @XmlElement(name = "ownerId")
-    private int ownerId = -1;
+    private Integer ownerId = null;
 
     /**
      * Обычное создание
@@ -65,6 +65,11 @@ public class Animal implements Creature {
 
     public void setOwner(Human owner) {
         this.owner = owner;
+        if (owner != null) {
+            this.ownerId = owner.getId();
+        } else {
+            this.ownerId = null;
+        }
     }
 
     public AnimalType getType() {
@@ -76,11 +81,11 @@ public class Animal implements Creature {
         return owner;
     }
 
-    public int getOwnerId() {
+    public Integer getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(int ownerId) {
+    public void setOwnerId(Integer ownerId) {
         this.ownerId = ownerId;
     }
 
