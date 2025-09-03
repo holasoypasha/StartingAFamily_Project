@@ -1,33 +1,39 @@
 package ru.pavlova.createFamily;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import java.io.FileReader;
-import java.io.FileWriter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import java.io.File;
+import java.util.ArrayList;
 
 public class SaveAndLoadJson implements SaveAndLoad {
-    private Gson gson;
+    private ObjectMapper objectMapper;
 
     public SaveAndLoadJson() {
-        this.gson = new GsonBuilder().setPrettyPrinting().create();
+        this.objectMapper = new ObjectMapper();
+        this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
     @Override
     public void save(String filePath, FamilyData familyData) {
-        try (FileWriter writer = new FileWriter(filePath)) {
+        try {
             FamilyData dataToSave = new FamilyData();
-            dataToSave.humans = familyData.humans;
-            dataToSave.animals = familyData.animals;
+            dataToSave.humans = new ArrayList<>();
+            dataToSave.animals = new ArrayList<>();
 
-            for (Animal animal : familyData.animals) {
-                if (animal.getOwner() != null) {
-                    animal.setOwnerId(animal.getOwner().getId());
-                    animal.setOwner(null);
-                }
+            for (Human human : familyData.humans) {
+                Human humanCopy = new Human(human.getId(), human.getName(), human.getAge());
+                dataToSave.humans.add(humanCopy);
             }
 
-            gson.toJson(familyData, writer);
+            for (Animal animal : familyData.animals) {
+                Animal animalCopy = new Animal(animal.getId(), animal.getName(), animal.getTypeOfAnimal());
+                if (animal.getOwner() != null) {
+                    animalCopy.setOwnerId(animal.getOwner().getId());
+                }
+                dataToSave.animals.add(animalCopy);
+            }
+
+            objectMapper.writeValue(new File(filePath), dataToSave);
             System.out.println("Данные сохранены в файл " + filePath);
         } catch (Exception e) {
             System.out.println("Ошибка при сохранении: " + e.getMessage());
@@ -36,11 +42,12 @@ public class SaveAndLoadJson implements SaveAndLoad {
 
     @Override
     public void load(String filePath, FamilyData familyData) {
-        try (FileReader reader = new FileReader(filePath)) {
-            FamilyData loadedData = gson.fromJson(reader, FamilyData.class);
+        try {
+            FamilyData loadedData = objectMapper.readValue(new File(filePath), FamilyData.class);
 
             familyData.humans.clear();
             familyData.animals.clear();
+
             familyData.humans.addAll(loadedData.humans);
             familyData.animals.addAll(loadedData.animals);
 
