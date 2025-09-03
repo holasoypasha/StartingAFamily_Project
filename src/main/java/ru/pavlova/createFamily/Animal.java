@@ -13,7 +13,7 @@ public class Animal implements Creature {
      * Тип животного
      */
     @XmlElement
-    private AnimalType type;
+    private AnimalType typeOfAnimal;
     /**
      * Кличка животного
      */
@@ -38,24 +38,24 @@ public class Animal implements Creature {
     /**
      * Обычное создание
      * @param name кличка животного
-     * @param type тип животного
+     * @param typeOfAnimal тип животного
      */
-    public Animal(String name, AnimalType type) {
+    public Animal(String name, AnimalType typeOfAnimal) {
         this.id = increaseId++;
         this.name = name;
-        this.type = type;
+        this.typeOfAnimal = typeOfAnimal;
     }
 
     /**
      * СОздание для загрузки из файла
      * @param id идентификатор животного
      * @param name кличка животного
-     * @param type тип животного
+     * @param typeOfAnimal тип животного
      */
-    public Animal(int id, String name, AnimalType type) {
+    public Animal(int id, String name, AnimalType typeOfAnimal) {
         this.id = id;
         this.name = name;
-        this.type = type;
+        this.typeOfAnimal = typeOfAnimal;
         if (id >= increaseId) {
             increaseId = id + 1;
         }
@@ -72,8 +72,8 @@ public class Animal implements Creature {
         }
     }
 
-    public AnimalType getType() {
-        return type;
+    public AnimalType getTypeOfAnimal() {
+        return typeOfAnimal;
     }
 
     @XmlTransient
@@ -101,7 +101,7 @@ public class Animal implements Creature {
 
     @Override
     public String toString() {
-        return type.getAnimalName() + " по кличке " + name +
+        return typeOfAnimal.getAnimalName() + " по кличке " + name +
                 (owner != null ? " (хозяин: " + owner.getName() + ")" : " (без хозяина)");
     }
 }

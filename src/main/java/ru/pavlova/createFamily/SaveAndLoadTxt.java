@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 public class SaveAndLoadTxt implements SaveAndLoad {
     @Override
@@ -12,7 +11,7 @@ public class SaveAndLoadTxt implements SaveAndLoad {
         try (PrintWriter writer = new PrintWriter(filePath)) {
             //добавляем людей в файл
             for (Human human : familyData.humans) {
-                writer.println("Человек," + human.getId() + "," + human.getName() + "," + human.getAge());
+                writer.println(CreatureType.HUMAN.getTypeOfCreature() + "," + human.getId() + "," + human.getName() + "," + human.getAge());
             }
 
             //добавляем животных в файл
@@ -24,7 +23,7 @@ public class SaveAndLoadTxt implements SaveAndLoad {
                     ownerId = null;
                 }
 
-                writer.println("Животное," + animal.getId() + "," + animal.getType() + "," + animal.getName() + "," + ownerId);
+                writer.println(CreatureType.ANIMAL.getTypeOfCreature() + "," + animal.getId() + "," + animal.getTypeOfAnimal() + "," + animal.getName() + "," + ownerId);
             }
             System.out.println("Данные сохранены в файл " + filePath);
         } catch (Exception e) {
@@ -44,7 +43,7 @@ public class SaveAndLoadTxt implements SaveAndLoad {
                     String[] data = line.split(",");
 
                     //добавляем людей
-                    if (data[0].equals("Человек")) {
+                    if (data[0].equals(CreatureType.HUMAN.getTypeOfCreature())) {
                         try {
                             int id = Integer.parseInt(data[1]);
                             String name = data[2];
@@ -52,18 +51,13 @@ public class SaveAndLoadTxt implements SaveAndLoad {
                             familyData.humans.add(new Human(id, name, age));
                         } catch (AgeLimitException e) {
                             System.out.println("Ошибка возраста: " + e.getMessage());
-                            return;
                         } catch (NumberFormatException e) {
                             System.out.println("Ошибка формата: " + e.getMessage());
-                            return;
-                        } catch (Exception e) {
-                            System.out.println("Ошибка: " + e.getMessage());
-                            return;
                         }
                     }
 
                     //добавляем животных
-                    else if (data[0].equals("Животное")) {
+                    else if (data[0].equals(CreatureType.ANIMAL.getTypeOfCreature())) {
                         try {
                             int id = Integer.parseInt(data[1]);
                             AnimalType type = AnimalType.valueOf(data[2]);
@@ -87,6 +81,11 @@ public class SaveAndLoadTxt implements SaveAndLoad {
                             System.out.println("Ошибка: " + e.getMessage());
                             return;
                         }
+                    }
+
+                    //неизвестный тип существа
+                    else {
+                        System.out.println("Обнаружен неизвестный тип существа: " + data[0] + ". Существо пропущено.");
                     }
                 } catch (Exception e) {
                     System.out.println("Ошибка: " + e.getMessage());

@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.List;
 
 public class SaveAndLoadJson implements SaveAndLoad {
     private Gson gson;

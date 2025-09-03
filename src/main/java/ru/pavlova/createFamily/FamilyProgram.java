@@ -287,11 +287,11 @@ public class FamilyProgram {
 
         //пользовательно вводит путь
         scanner.nextLine();
-        System.out.println("Введите путь для сохранения (или нажмите Enter, чтобы файл с названием family_data сохранился в папку проекта): ");
+        System.out.println("Введите путь для сохранения, включая название файла (или нажмите Enter, чтобы файл с названием family_data сохранился в папку проекта): ");
         String filePath = scanner.nextLine().trim();
 
         //если пользователь не ввел путь
-        if (filePath.isEmpty()) {
+        if (filePath.isBlank()) {
             filePath = defaultFileName;
         }
         //добавляем расширение к файлу, если его нет

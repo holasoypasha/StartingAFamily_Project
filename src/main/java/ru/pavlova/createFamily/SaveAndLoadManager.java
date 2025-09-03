@@ -1,14 +1,5 @@
 package ru.pavlova.createFamily;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-
-import javax.xml.bind.*;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-
 public class SaveAndLoadManager {
     private final FamilyData familyData;
     private final SaveAndLoad txtHandler;
